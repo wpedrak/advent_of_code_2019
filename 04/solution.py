@@ -22,6 +22,7 @@ def check_prop4(n):
     # print(pairs)
     return all(map(lambda x: x[0] <= x[1], pairs))
 
+
 non_filtered = list(possible_numbers)
 print(len(non_filtered))
 filtered1 = list(filter(check_prop1, non_filtered))

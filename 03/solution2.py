@@ -151,12 +151,12 @@ def get_lengths(inp, crossings):
         else:
             raise Exception("wrong direction")
         point_to = Point(x, y)
-        l = Line(point_from, point_to)
+        line = Line(point_from, point_to)
         for pl in pseudolines:
-            if pl | l:
+            if pl | line:
                 if (pl.begin.x, pl.begin.y) in distances:
                     continue
-                if l.is_horizontal():
+                if line.is_horizontal():
                     distances[(pl.begin.x, pl.begin.y)] = dist + \
                         abs(point_from.x - pl.begin.x)
                 else:

@@ -113,7 +113,7 @@ class JumpIfTrue(Operation):
         self.shift_pointer(computer)
         if v1 != 0:
             computer.pointer = v2
-        
+
 
 class JumpIfFalse(Operation):
     opcode = 6
@@ -125,7 +125,7 @@ class JumpIfFalse(Operation):
         self.shift_pointer(computer)
         if v1 == 0:
             computer.pointer = v2
-        
+
 
 class LessThan(Operation):
     opcode = 7
@@ -185,6 +185,7 @@ class OperationProvider:
 
         return operation
 
+
 class Queue:
     def __init__(self, name=None):
         self.q = deque()
@@ -205,6 +206,7 @@ class Queue:
 
     def __repr__(self):
         return str(self)
+
 
 class Computer:
     PAUSED = "PAUSED"
@@ -264,18 +266,18 @@ def check_setting(phase_setting, tape, v=False):
     for idx, inp in enumerate(phase_setting):
         queues[idx].put_message(inp)
 
-    queues[0].put_message(0) # first input
+    queues[0].put_message(0)  # first input
 
     computers = []
     for idx in range(5):
         computer = Computer(inq=queues[idx], outq=queues[(idx+1) % 5])
         computer.load(tape)
         computers.append(computer)
-        
+
     running_computer_idx = 0
-        
+
     # x = 0
-    while not Computer.all_halted(computers):# and x < 10:
+    while not Computer.all_halted(computers):  # and x < 10:
         # x +=1
         # print("states", [x.state for x in computers])
         # print(queues)
@@ -287,10 +289,11 @@ def check_setting(phase_setting, tape, v=False):
         computer.run(v=v)
         # print('running fin')
         running_computer_idx = (running_computer_idx + 1) % 5
-    
+
     # print(queues)
 
     return queues[0].get_message()
+
 
 def solve(tape):
     results = []

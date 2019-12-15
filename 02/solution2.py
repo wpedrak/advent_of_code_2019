@@ -5,6 +5,7 @@ ADD = 1
 MUL = 2
 HALT = 99
 
+
 def compute(noun, verb, state):
     memory = state[:]
     memory[1] = noun

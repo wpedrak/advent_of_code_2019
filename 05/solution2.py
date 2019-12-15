@@ -102,6 +102,7 @@ class JumpIfTrue(Operation):
         ptr = v2 if v1 != 0 else self.pointer_shift(pointer)
         return False, ptr
 
+
 class JumpIfFalse(Operation):
     opcode = 6
     num_of_args = 2
@@ -111,6 +112,7 @@ class JumpIfFalse(Operation):
         v2 = self.get_value(1, computer)
         ptr = v2 if v1 == 0 else self.pointer_shift(pointer)
         return False, ptr
+
 
 class LessThan(Operation):
     opcode = 7
@@ -122,6 +124,7 @@ class LessThan(Operation):
         res_address = self.get_address(2)
         computer.tape[res_address] = int(v1 < v2)
         return False, self.pointer_shift(pointer)
+
 
 class Equals(Operation):
     opcode = 8

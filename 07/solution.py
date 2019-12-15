@@ -224,6 +224,7 @@ def check_setting(phase_setting, tape, v=False):
             print("-----------result of computer:", current_result)
     return current_result
 
+
 def solve(tape):
     results = []
 
