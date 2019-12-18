@@ -1,33 +1,28 @@
-import numpy as np
+def postfix_sum(numbers):
+    res = []
+    curr_sum = 0
+    for item in reversed(numbers):
+        curr_sum += item
+        res.append(curr_sum)
+    return list(reversed(res))
 
 
 def fft(numbers):
-    arr_numbers = np.array(numbers)
-    ones = 
-    compl = np.fft.fft(arr_numbers)
-    print('---------------------------------------------')
-    print(arr_numbers)
-    print(compl)
-    print(np.absolute(compl))
-    print('---------------------------------------------')
-    mask = (np.sign(compl.real) + np.sign(compl.imag)) / 2
-    results = np.absolute(compl) * mask
-    return list(results)
+    pref = postfix_sum(numbers)
+    return [x % 10 for x in pref]
 
 
-def solve(message, iterations):
-    # offset = int(message[:7])
-    # print(offset)
-    numbers = [int(x) for x in message]  # * 10000
-    for i in range(iterations):
+def solve(message):
+    message *= 10000
+    offset = int(message[:7])
+    numbers = [int(x) for x in message[offset:]]
+    for i in range(100):
         print("Iteration", i)
         numbers = fft(numbers)
-        print(numbers)
 
-    return numbers
-    # return [str(x) for x in numbers][offset:offset + 8]
+    return [str(x) for x in numbers]
 
 
-message = "12345678"
-res = solve(message, 4)
-print("".join(res))
+message = "59727310424796235189476878806940387435291429226818921130171187957262146115559932358924341808253400617220924411865224341744614706346865536561788244183609411225788501102400269978290670307147139438239865673058478091682748114942700860895620690690625512670966265975462089087644554004423208369517716075591723905075838513598360188150158989179151879406086757964381549720210763972463291801513250953430219653258827586382953297392567981587028568433943223260723561880121205475323894070000380258122357270847092900809245133752093782889315244091880516672127950518799757198383131025701009960944008679555864631340867924665650332161673274408001712152664733237178121872"
+res = solve(message)
+print("".join(res[:8]))
