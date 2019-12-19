@@ -29,3 +29,6 @@ class Point:
 
     def __sub__(self, p):
         return Point(self.x-p.x, self.y-p.y)
+
+    def __add__(self, p):
+        return Point(self.x + p.x, self.y + p.y)
