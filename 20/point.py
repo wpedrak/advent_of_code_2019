@@ -29,3 +29,6 @@ class Point:
 
     def __sub__(self, p):
         return Point(self.x-p.x, self.y-p.y)
+
+    def __lt__(self, p):
+        return self.x < p.x or (self.x == p.x and self.y < p.y)
