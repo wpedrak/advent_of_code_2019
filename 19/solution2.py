@@ -4,6 +4,7 @@ from collections import defaultdict as dd
 
 import numpy as np
 
+
 class Laser:
 
     LASER = '#'
@@ -16,7 +17,6 @@ class Laser:
         self.tape = tape
         self.points = dd(lambda: Laser.UNKNOWN)
 
-
     def get_info(self, p):
         current_knowlage = self.points[p]
         if current_knowlage != Laser.UNKNOWN:
@@ -24,11 +24,11 @@ class Laser:
 
         computer = Computer(inq=self.in_queue, outq=self.out_queue)
         computer.load(self.tape)
-        
+
         self.in_queue.put_message(p.x)
         self.in_queue.put_message(p.y)
         computer.run()
-        
+
         res = self.out_queue.get_message()
         symbol = Laser.LASER if res else Laser.EMPTY
         self.points[p] = symbol
@@ -41,7 +41,7 @@ class Laser:
 
         rows = []
 
-        for y in range(max_y ):
+        for y in range(max_y):
             row = []
             for x in range(max_x):
                 row.append(str(self.points[Point(x, y)]))
@@ -53,7 +53,7 @@ class Laser:
 
     def find_borders(self, iters, start_point=None):
         if not start_point:
-            start_point = Point(8,9) # checked on image
+            start_point = Point(8, 9)  # checked on image
 
         if self.get_info(start_point) != Laser.LASER:
             raise Exception('Wrong start')
@@ -64,14 +64,14 @@ class Laser:
         curr_top = start_point  # any LASER in line
         curr_bot = start_point  # first empty in line
         while self.get_info(curr_bot) != Laser.EMPTY:
-                curr_bot = curr_bot - Point(1, 0)
+            curr_bot = curr_bot - Point(1, 0)
 
         while iters:
             while self.get_info(curr_top) != Laser.EMPTY:
                 curr_top = Point(curr_top.x + 1, curr_top.y)
             self.top.append(curr_top - Point(1, 0))
             curr_top = Point(curr_top.x, curr_top.y + 1)
-            
+
             while self.get_info(curr_bot) != Laser.LASER:
                 curr_bot = Point(curr_bot.x + 1, curr_bot.y)
             self.bot.append(curr_bot)
@@ -80,7 +80,7 @@ class Laser:
             if iters % 10 == 0:
                 print(iters)
 
-            iters -=1
+            iters -= 1
 
     @staticmethod
     def linear_regression(X_list, Y_list):
@@ -89,12 +89,11 @@ class Laser:
 
         return np.linalg.inv(X.dot(X.T)).dot(X).dot(Y.T)[0, 0]
 
-
     def aprox(self):
         top_X = [p.x for p in self.top]
         top_Y = [p.y for p in self.top]
-        bot_X = [p.x for p in self.bot] 
-        bot_Y = [p.y for p in self.bot] 
+        bot_X = [p.x for p in self.bot]
+        bot_Y = [p.y for p in self.bot]
 
         top_theta = Laser.linear_regression(top_X, top_Y)
         bot_theta = Laser.linear_regression(bot_X, bot_Y)
@@ -109,14 +108,13 @@ class Laser:
         x = int(gap / (self.bot_theta - self.top_theta))
         # print(x)
         res = Point(x, int(self.approx * x))
-        
+
         if self.get_info(res) != Laser.LASER:
             raise Exception('Gap point in not laser')
 
         return res
 
     # def check_gap_size(self, p):
-
 
     def find_square(self, desired_size):
         best = 0
@@ -141,6 +139,7 @@ class Laser:
             p + Point(0, 99)
         ]
         return all([self.get_info(x) == Laser.LASER for x in vertexes])
+
 
 def solve(tape):
     laser = Laser(tape)
@@ -167,8 +166,6 @@ def solve(tape):
     # print(laser.check_square(not_working_point + Point(0, -1)))
     # print(laser.check_square(not_working_point + Point(-1, 0)))
     # print(laser.check_square(not_working_point + Point(-1, -1)))
-
-
 
     return result
 

@@ -44,7 +44,6 @@ class Maze():
 
             raise Exception('Wrong length of teleports.')
 
-
     def parse_teleport(self, point):
         neighbours = self.get_neighbours(point)
         snd_letter_point = list(filter(
