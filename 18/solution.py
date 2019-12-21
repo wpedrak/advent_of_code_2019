@@ -20,7 +20,7 @@ class Maze():
 
                 if value == Maze.PLAYER:
                     self.player = point
-                    self.board[point] = Maze.EMPTY
+                    self.board[point] = Maze.WALL
                     continue
                 elif value.isalpha():
                     self.knd[value] = point
@@ -80,7 +80,7 @@ class Graph:
     def num_combinations(self):
         res = 1
         for v in self.edges.values():
-            res *= v
+            res *= len(v)
         return res
 
     def solve_for(self):
