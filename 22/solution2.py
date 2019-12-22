@@ -4,71 +4,39 @@ DECK_SIZE = 119315717514047
 # DECK_SIZE = 10007
 
 
-def deal_into_new(i):
-    return (DECK_SIZE-1) - i
-
-
-def cut(shift):
-    def aux(i):
-        return (i - shift) % DECK_SIZE
-
-    return aux
-
-
-def deal_with_increment(inc):
-    def aux(i):
-        return (i * inc) % DECK_SIZE
-
-    return aux
-
-
-def parse_line(line):
+def get_line_params(line):
     splitted = line.split()
     first = splitted[0]
     second = splitted[1]
     if first == 'cut':
-        return cut(int(second))
+        return 1, - int(second)
     elif second == 'into':
-        return deal_into_new
+        return -1, -1
     elif second == 'with':
-        return deal_with_increment(int(splitted[-1]))
+        return int(splitted[-1]), 0
 
 
-def solve_once():
+def input_as_single_operator():
     file = open("input.txt", "r")
     lines = [line.rstrip('\n') for line in file]
-    functions = list(map(
-        parse_line,
-        lines
-    ))
 
-    return lambda idx: functools.reduce(lambda e, f: f(e), functions, idx)
+    mul = 1
+    add = 0
 
+    for line in lines:
+        a, b = get_line_params(line)
+        mul = mul * a
+        add = add * a + b
 
-def get_period(check_idx):
-    solver = solve_once()
+    mul %= DECK_SIZE
+    add %= DECK_SIZE
 
-    visited = set()
-    idx = check_idx
-
-    while True:
-        print(len(visited))
-        idx = solver(idx)
-        if idx in visited:
-            return len(visited)
-        visited.add(idx)
+    return lambda x: (x * mul + add) % DECK_SIZE
+    # return mul, add
 
 
 def solve(check_idx, num_to_apply):
-    period = get_period(check_idx)
-    num_to_apply %= period
-
-    solver = solve_once()
-    idx = check_idx
-    for _ in range(num_to_apply):
-        idx = solver(idx)
-
-    return idx
+    solver = input_as_single_operator()
 
 
 res = solve(2020, 101741582076661)
