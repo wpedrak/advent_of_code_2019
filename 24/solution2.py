@@ -19,6 +19,10 @@ class Bugs():
                 self.board[(point, level)] = value
 
     def get_neighbours(self, point, level):
+        assert(0 <= point.x <= 5)
+        assert(0 <= point.y <= 5)
+        # assert(point != Point(2, 2))
+
         on_this_level = []
         if point.x != 0:
             on_this_level.append((Point(point.x - 1, point.y), level))
@@ -62,6 +66,9 @@ class Bugs():
             if val != Bugs.BUG:
                 continue
 
+            if not (point, level) in evolution:
+                evolution[(point, level)] = 0
+
             neighbours = self.get_neighbours(point, level)
             # print(point)
             # print(neighbours)
@@ -70,8 +77,11 @@ class Bugs():
                 # print(pl)
                 evolution[pl] += 1
 
-        for pl, num_of_neighbours in dict(evolution).items():
+        # print(evolution)
+
+        for pl, num_of_neighbours in evolution.items():
             # print(pl, num_of_neighbours)
+            assert(num_of_neighbours >= 0)
             if self.board[pl] == Bugs.BUG:
                 self.board[pl] = Bugs.BUG if num_of_neighbours == 1 else Bugs.EMPTY
             elif self.board[pl] == Bugs.EMPTY:
@@ -107,23 +117,10 @@ def solve(inp, time):
         print("Evolution", i)
         bugs.evolve()
 
-    # p = Point(3, 3)
-    # print(p, bugs.get_neighbours(p, 0))
-
-    # p = Point(1, 1)
-    # print(p, bugs.get_neighbours(p, 1))
-
-    # p = Point(3, 0)
-    # print(p, bugs.get_neighbours(p, 1))
-
-    # p = Point(4, 0)
-    # print(p, bugs.get_neighbours(p, 1))
-
-    # p = Point(3, 2)
-    # print(p, bugs.get_neighbours(p, 0))
-
-    # p = Point(3, 2)
-    # print(p, bugs.get_neighbours(p, 1))
+    # for x in range(5):
+    #     for y in range(5):
+    #         p = Point(x, y)
+    #         print(p, bugs.get_neighbours(p, 0))
 
     # for i in range(-5, 6):
     #     print(i)
@@ -133,13 +130,13 @@ def solve(inp, time):
 
 
 bugs = '''
-....#
+##.#.
 #..#.
-#..##
-..#..
-#....
+.....
+....#
+#.###
 '''.strip()
 
-res = solve(bugs, 10)
+res = solve(bugs, 200)
 
 print(res)
