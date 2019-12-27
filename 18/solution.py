@@ -1,5 +1,7 @@
 from collections import deque
 from point import Point
+from collections import defaultdict as dd
+import copy
 
 
 class Maze():
@@ -70,6 +72,8 @@ class Graph:
     def __init__(self, maze):
         self.edges = {}
 
+        self.from_start = maze.get_propositions(maze.player)
+
         for item, point in maze.knd.items():
             self.edges[item] = maze.get_propositions(point)
 
@@ -83,28 +87,106 @@ class Graph:
             res *= len(v)
         return res
 
+    @staticmethod
+    def get_blockings_in_tree(node, edges):
+        def aux(node, blockings):
+            if not edges[node]:
+                return {node: blockings}
+
+            new_blockings = blockings[:]
+            if node.isupper():
+                new_blockings.append(node.lower())
+
+            small_blockings = [aux(n, new_blockings) for n in edges[node]]
+
+            result = {node: new_blockings} if node.islower() else {}
+            for sb in small_blockings:
+                result.update(sb)
+
+            return result
+
+        return aux(node, [])
+
+    @staticmethod
+    def treefy(edges, root):
+        tree_edges = {}
+        visited = set()
+        to_visit = deque([root])
+
+        while to_visit:
+            current = to_visit.popleft()
+            visited.add(current)
+
+            neighbours = edges[current]
+
+            tree_edges[current] = list(set(neighbours) - visited)
+
+            to_visit += deque([n for n in neighbours if n not in visited])
+
+        return tree_edges
+
+    @staticmethod
+    def extend_blocking(blocking):
+        new_blocking = dict(blocking)
+
+        for blocker, is_blocking in blocking.items():
+            for arr in new_blocking.values():
+                if blocker in arr:
+                    arr += is_blocking
+
+        return new_blocking
+
+    @staticmethod
+    def reverse_arrows(edges):
+        new_edges = dd(lambda: [])
+        for k, lst in edges.items():
+            for v in lst:
+                new_edges[v].append(k)
+
+        return dict(new_edges)
+
     def get_blockings(self):
-        # def aux()
-        pass
+        letters_edges = {}
+        for n, vals in self.edges.items():
+            letters_edges[n] = [k for k, _ in vals]
+        letters_edges['@'] = [k for k, _ in self.from_start]
+        tree_edges = Graph.treefy(letters_edges, '@')
+        is_blocked_by = Graph.get_blockings_in_tree('@', tree_edges)
+        extended_is_blocked_by = Graph.extend_blocking(is_blocked_by)
+        return Graph.reverse_arrows(extended_is_blocked_by)
 
+    @staticmethod
+    def all_topological_sorts(will_unlock):
+        all_locked = set([item for items in will_unlock.values() for item in items])
+        unlocked = set(will_unlock) - all_locked
 
+        res = []
 
-    def solve_for(self):
-        pass
+        for item in unlocked:
+            edges = copy.deepcopy(will_unlock)
+            del edges[item]
+            smaller_sorts = Graph.all_topological_sorts(edges)
+            res += [[item] + srt for srt in smaller_sorts]
+
+        return res
 
 
 def solve(inp):
     maze = Maze(inp)
-    propositions = maze.get_propositions(maze.player)
-    starts = [x for x in propositions if x[0].islower()]
+    # propositions = maze.get_propositions(maze.player)
+    # starts = [x for x in propositions if x[0].islower()]
 
+    # print(starts)
     knd_graph = Graph(maze)
+    # knd_graph.show_edges()
 
     blockings = knd_graph.get_blockings()
 
-    print(blockings)
+    print('top_sorts')
+    top_sorts = Graph.all_topological_sorts(blockings)
+    print(len(top_sorts))
 
-    # knd_graph.show_edges()
+    print(top_sorts)
 
     # results = []
 
