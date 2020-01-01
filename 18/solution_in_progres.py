@@ -177,7 +177,6 @@ class Graph:
 
             to_visit += deque([n for n in neighbours if n not in visited])
 
-
         # print(tree_edges)
         return tree_edges
 
@@ -248,7 +247,7 @@ class Graph:
             dependency[k] += v
 
         # print(dict(dependency))
-        
+
         return Graph.reverse_arrows(dict(dependency))
 
     @staticmethod
@@ -310,7 +309,7 @@ def solve(inp):
         if local_min > cost_of_order:
             local_min = cost_of_order
             print(local_min, '->', top_sort)
-    
+
     print('Done!')
 
     return local_min
@@ -369,6 +368,7 @@ def analize(inp):
 # #.....@.a.B.c.d.A.e.F.g#
 # ########################
 # '''.strip()
+
 
 # 136
 maze = '''

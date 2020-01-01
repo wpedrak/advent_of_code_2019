@@ -1,6 +1,5 @@
 from collections import deque
 from point import Point
-from collections import defaultdict as dd
 
 
 class Maze():
